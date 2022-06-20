@@ -1,0 +1,95 @@
+7a) Program to recognize the grammar (an
+b, n>= 5).
+
+7a.l
+%{
+#include "y.tab.h"
+%}
+%%
+[aA] {return A;}
+[bB] {return B;}
+\n {return NL;}
+. {return yytext[0];}
+%%
+int yywrap()
+{
+return 1;
+}
+7a.y
+%{
+
+#include<stdio.h>
+#include<stdlib.h>
+%}
+%token A B NL
+%%
+stmt: A A A A A S B NL {printf("valid string\n"); exit(0);}
+;
+S: S A
+|
+
+;
+%%
+int yyerror(char *msg)
+{
+printf("invalid string\n");
+exit(0);
+}
+main()
+{
+printf("enter the string\n");
+yyparse();
+}
+
+
+
+7b) Program to recognize strings ‘aaab’, ‘abbb’, ‘ab’ and ‘a’ using the grammar (an
+b
+n
+, n>=
+
+0).
+7b.l
+%{
+#include "y.tab.h"
+%}
+%%
+[aA] {return A;}
+[bB] {return B;}
+\n {return NL;}
+. {return yytext[0];}
+%%
+int yywrap()
+{
+return 1;
+}
+7b.y
+%{
+#include<stdio.h>
+#include<stdlib.h>
+%}
+%token A B NL
+%%
+stmt: S NL { printf("valid string\n");
+exit(0); }
+;
+S: A S B |
+;
+%%
+int yyerror(char *msg)
+{
+
+printf("invalid string\n");
+exit(0);
+}
+main()
+{
+printf("enter the string\n");
+yyparse();
+}
+Commands For Execution
+lex 7b.l
+yacc 7b.y
+yacc -y -d 7b.y
+gcc lex.yy.c y.tab.c -o 7b.exe
+7b.exe
