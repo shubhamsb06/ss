@@ -1,0 +1,60 @@
+a) Shell script that accepts two file names as arguments, checks if the permissions for these
+files are identical and if the permissions are identical, outputs the common permissions,
+otherwise outputs each file name followed by its permissions.
+if [ $# != 2 ]
+then
+echo "Invalid input!!!"
+else
+p1=`ls -l $1|cut -d " " -f1`
+p2=`ls -l $2|cut -d " " -f1`
+if [ $p1 == $p2 ]
+then
+echo "the file permissions are same and it is : "
+echo "$p1"
+else
+echo "The file permissions are different"
+echo "$1 : $p1"
+echo "$2 : $p2"
+fi
+fi
+
+OUTPUT
+command to create the file vi pgm9.sh
+use ls -l command to get list of files and their permission
+Use chmod 777 pgmname to change permissions
+command to execute ./9a.sh filename1 filename2
+
+Pgm 9b :
+C program that creates a child process to read commands from the standard input and execute them
+#include<stdio.h>
+int main()
+{
+int ch,rv;
+char cmd[10];
+rv=fork();
+if(rv==0)
+{
+do
+{
+printf("\nEnter a command\n");
+scanf("%s",cmd);
+system(cmd);
+printf("\n1 : continue\n0 : exit\n");
+scanf("%d",&ch);
+}
+while(ch!=0);
+}
+else
+{
+wait(0);
+printf("\nChild terminated\n");
+}
+return 0;
+}
+
+output
+use the same online editor.
+Command to write pgm in online editor : vi pgm9b.c or u can upload file directly
+command to execute c file(C compiler) : gcc pgm9b.c
+clear error if any, warnings are ok
+Command to run the code : ./a.out
