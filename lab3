@@ -1,0 +1,61 @@
+Program to count the number of characters, words, spaces and lines in a given input file.
+%{
+#include &lt;stdio.h&gt;
+int wc=0,cc=0,lc=0,bc=0;
+char infile[25];
+%}
+word [a-zA-Z0-9]+
+eol [\n]
+%%
+{word} {wc++; cc+=yyleng;}
+{eol} {lc++; cc++;}
+[&quot; &quot;] {bc++; cc++;}
+[\t] {bc+=8; cc++;}
+. {cc++;}
+%%
+int yywrap() { }
+int main()
+{
+printf(&quot;\nRead the input file\n&quot;);
+scanf(&quot;%s&quot;,infile);
+yyin=fopen(infile,&quot;r&quot;);
+yylex();
+printf(&quot;Number of characters = %d\n&quot;,cc);
+printf(&quot;Number of words = %d\n&quot;,wc);
+printf(&quot;Number of spaces = %d\n&quot;,bc);
+printf(&quot;Number of lines = %d\n&quot;,lc);
+fclose(yyin);
+return 0;
+
+}
+
+
+3b. Program to count the numbers of comment lines in a given C program. Also eliminate
+them and copy the resulting program into separate file
+%{
+#include &lt;stdio.h&gt;
+int cc=0;
+%}
+
+%x CMNT
+
+%%
+&quot;/*&quot; {BEGIN CMNT;}
+&lt;CMNT&gt;. ;
+
+&lt;CMNT&gt;&quot;*/&quot; {BEGIN 0; cc++;}
+%%
+int yywrap() { }
+int main(int argc, char *argv[])
+{
+if(argc!=3)
+{
+printf(&quot;Usage : %s &lt;scr_file&gt; &lt;dest_file&gt;\n&quot;,argv[0]);
+return 0;
+}
+yyin=fopen(argv[1],&quot;r&quot;);
+yyout=fopen(argv[2],&quot;w&quot;);
+yylex();
+printf(&quot;\nNumber of multiline comments = %d\n&quot;,cc);
+return 0;
+}
