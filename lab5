@@ -1,0 +1,92 @@
+5a. Program to recognize and count the number of identifiers in a given input file.
+%{
+#include<stdio.h>
+int idc=0;
+%}
+
+e[=][ ]*[0-9]+
+ws[ \n\t]*
+id[_a-zA-Z][_a-zA-Z0-9]*
+decln "int"|"float"|"char"|"double"|"short"|"long"|"unsigned"
+
+%x defn
+
+%%
+{decln} {BEGIN defn;}
+<defn>{ws}{id}{ws}\, {idc++;}
+<defn>{ws}{id}{ws}\; {BEGIN 0;idc++;}
+<defn>{ws}{id}{ws}{e}{ws}\, {idc++;}
+<defn>{ws}{id}{ws}{e}{ws}\; {BEGIN 0;idc++;}
+<*>\n ;
+<*>. ;
+%%
+
+int yywrap() { }
+
+int main(int argc,char *argv[])
+{
+
+if(argc==2)
+{
+yyin=fopen(argv[1],"r");
+yylex();
+printf("\nNumber of identifiers = %d\n",idc);
+}
+else
+{
+printf("\nUsage : %s <src_file> \n",argv[0]);
+}
+return 0;
+}
+
+Commands for execution
+lex pgm_name.l
+gcc lex.yy.c -o pgm_name.exe
+pgm_name.exe file.txt
+
+Output
+
+5b. Program to evaluate an arithmetic expression involving operators +, -, * and /
+5b.l
+%{
+#include "y.tab.h"
+%}
+%%
+[0-9]+ {yylval=atoi(yytext);return NUM;}
+[\t] ;
+\n return 0;
+. return yytext[0];
+%%
+int yywrap() { }
+5b.y
+%{#include <stdio.h>%}
+%token NUM
+%left '+''-'
+%left '/‘’*’
+%%
+expr:e {printf("Valid expression\n"); printf("Result : %d\n",$1); return 0;}
+e:e'+'e {$$=$1+$3;}
+| e'-'e {$$=$1-$3;}
+| e'*'e {$$=$1*$3;}
+| e'/'e {$$=$1/$3;}
+| '('e')' {$$=$2;}
+| NUM {$$=$1;}
+%%
+int main()
+{
+printf("\nEnter an arithmetic expression\n");
+yyparse();
+return 0;
+
+}
+int yyerror()
+{
+printf("\nInvalid expression\n");
+return 0;
+}
+Command for execution
+lex 5b.l
+yacc 5b.y
+yacc -y -d 5b.y
+gcc lex.yy.c y.tab.c -o 5b.exe
+5b.exe
